@@ -31,23 +31,30 @@ fun generateSchemaTokenName( yytext ) =
 %header (functor Target_LexFn(val getNextTokenPos : string -> {line: word, column: word}));
 
 alpha        = [A-Za-z];
-digit        = [0-9];
 alphanumeric = [A-Za-z0-9_];
+identifier   = {alpha}{alphanumeric}*;
+digit        = [0-9];
 ws           = [\  \t \n];
+integer      = [0-9]|[1-9]{digit}*;
+boolean      = "true"|"false";
 
 schema_id    = "<" {alpha}{alphanumeric}* ">_" {alphanumeric}+;
 comment      = "//" .* ;
 
+
 %%
+"int"                         => ( SHELL(yytext, yytext, getNextTokenPos(yytext)));
+"bool"                        => ( SHELL(yytext, yytext, getNextTokenPos(yytext)));
+"="                           => ( SHELL(yytext, yytext, getNextTokenPos(yytext)));
+{integer}                     => ( SHELL("integer", yytext, getNextTokenPos(yytext)));
+{boolean}                     => ( SHELL("boolean", yytext, getNextTokenPos(yytext)));
+
 {ws}+        => ( getNextTokenPos(yytext); lex()  );
 {comment}    => ( getNextTokenPos(yytext); lex()  );
 
-{digit}+                      => ( SHELL("integer"   , yytext,     getNextTokenPos(yytext))    );
-{alpha}{alphanumeric}*        => ( SHELL("id"        , yytext,     getNextTokenPos(yytext))    );
-
-
-
 {schema_id}                   => ( SHELL(generateSchemaTokenName(yytext), yytext, getNextTokenPos(yytext))    );
 "[:]"                         => ( SHELL("" , yytext, getNextTokenPos(yytext))    );
-
+{digit}+                      => ( SHELL("integer"   , yytext,     getNextTokenPos(yytext))    );
+{identifier}                  => ( SHELL("identifier", yytext, getNextTokenPos(yytext)));
  .                            => ( error("ignored an unprintable character: " ^ yytext); getNextTokenPos(yytext); lex()  );
+

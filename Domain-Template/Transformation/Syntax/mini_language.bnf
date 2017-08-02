@@ -1,5 +1,13 @@
 USE_LR_PARSER
 
 prog
-(* ======================================================================================================= *)
-<prog>               ::= <stmt_list> "."                                                                .
+
+(* ======================================================================================================= *)
+<prog>                 ::= <declaration>.
+
+<declaration>          ::= "int" identifier
+                         | "bool" identifier
+                         | <initialization>.
+
+<initialization>       ::= "int" identifier "=" integer
+                         | "bool" identifier "=" boolean.           
