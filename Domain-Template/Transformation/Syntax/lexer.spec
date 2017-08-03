@@ -30,7 +30,7 @@ fun generateSchemaTokenName( yytext ) =
 %%
 %header (functor Target_LexFn(val getNextTokenPos : string -> {line: word, column: word}));
 
-bool         = true | false;
+boolean      = true | false;
 
 digit        = [0-9];
 posDigit     = [1-9];
@@ -46,27 +46,19 @@ schema_id    = "<" {alpha}{alphanumeric}* ">_" {alphanumeric}+;
 comment      = "//" .* ;
 
 %%
-{ws}+        => ( getNextTokenPos(yytext); lex()  );
-{comment}    => ( getNextTokenPos(yytext); lex()  );
 
-{digit}+                      => ( SHELL("integer"   , yytext,     getNextTokenPos(yytext))    );
-{alpha}{alphanumeric}*        => ( SHELL("id"        , yytext,     getNextTokenPos(yytext))    );
-
-
-
-{schema_id}                   => ( SHELL(generateSchemaTokenName(yytext), yytext, getNextTokenPos(yytext))    );
-"[:]"                         => ( SHELL("" , yytext, getNextTokenPos(yytext))    );
-
-"id"                          => ( SHELL("id" , yytext, getNextTokenPos(yytext))    );
-"boolean"                     => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
+"bool"                        => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "int"                         => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 ";"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "="                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
+"|"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "and"                         => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "or"                          => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "not"                         => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "<"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 ">"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
+"<="                          => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
+">="                          => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "=="                          => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "!="                          => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "--"                          => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
@@ -74,9 +66,9 @@ comment      = "//" .* ;
 "-"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "+"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "*"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
+"^"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "div"                         => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "mod"                         => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
-"^"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "{"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "}"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 "if"                          => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
@@ -87,4 +79,17 @@ comment      = "//" .* ;
 "("                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 ")"                           => ( SHELL(yytext , yytext, getNextTokenPos(yytext))    );
 
+{ws}+        => ( getNextTokenPos(yytext); lex()  );
+{comment}    => ( getNextTokenPos(yytext); lex()  );
+
+{integer}                     => ( SHELL("integer"   , yytext,     getNextTokenPos(yytext))    );
+{boolean}                     => ( SHELL("boolean"   , yytext,     getNextTokenPos(yytext)));
+{id}                          => ( SHELL("id"        , yytext,     getNextTokenPos(yytext))    );
+
+
+
+{schema_id}                   => ( SHELL(generateSchemaTokenName(yytext), yytext, getNextTokenPos(yytext))    );
+"[:]"                         => ( SHELL("" , yytext, getNextTokenPos(yytext))    );
+
  .                            => ( error("ignored an unprintable character: " ^ yytext); getNextTokenPos(yytext); lex()  );
+
