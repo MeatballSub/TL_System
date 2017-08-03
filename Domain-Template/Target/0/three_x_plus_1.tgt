@@ -1,1 +1,1 @@
-bool x = false
+int x;

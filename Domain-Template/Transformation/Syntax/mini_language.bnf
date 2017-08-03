@@ -1,13 +1,103 @@
 USE_LR_PARSER
 
-prog
+WFC_START
 
 (* ======================================================================================================= *)
-<prog>                 ::= <declaration>.
+<WFC_START>                 ::= <WFC_START_OPTIONS>
+                            | <WFC_START_OPTIONS><WFC_START>.
 
-<declaration>          ::= "int" identifier
-                         | "bool" identifier
-                         | <initialization>.
+<WFC_START_OPTIONS>         ::= <ASGMT_STATEMENT>. 
 
-<initialization>       ::= "int" identifier "=" integer
-                         | "bool" identifier "=" boolean.           
+<DECLARATION>               ::= "int" <IDENTIFIER>
+                              | "boolean" <IDENTIFIER>.
+
+<ASGMT_STATEMENT>           ::= <ASGMT>";"
+                              | <CONDITIONAL_OR>";"
+                              | <DECLARATION>";"
+                              | <BLOCK>
+                              | <COUNTER_EXPR>";"
+                              | <STATEMENTS>.
+
+<BLOCK>                     ::= "{" <BLOCK_STATEMENTS> "}".
+
+<BLOCK_STATEMENTS>          ::= <WFC_START_OPTIONS><BLOCK_STATEMENTS>
+                              | <EPSILON>.
+
+<EPSILON>                   ::= .
+  
+
+<ASGMT>                     ::= <LEFT_SIDE> "=" <CONDITIONAL_OR>.
+
+<LEFT_SIDE>                 ::= <DECLARATION>
+                              | <IDENTIFIER>.
+
+<STATEMENTS>                ::= <IF_THEN_ELSE>
+                              | <WHILE_LOOP>
+                              | <FOR_LOOP>
+                              | <PRINT_STATEMENT>.
+
+<IF_THEN_ELSE>              ::= "if""("<CONDITIONAL_OR> ")" <BLOCK>
+                              | "if""("<CONDITIONAL_OR> ")" <BLOCK> "else" <BLOCK>.
+
+<WHILE_LOOP>                ::= "while""("<CONDITIONAL_OR>")"<BLOCK>.
+
+<FOR_LOOP>                  ::= "for""("<ASMT>";" <CONDITIONAL_OR>";" <COUNTER_EXPR>")"<BLOCK>.
+
+<COUNTER_EXPR>              ::= <PRE_DEC_EXPR>
+                              | <PRE_INC_EXPR>
+                              | <POST_DEC_EXPR>
+                              | <POST_INC_EXPR>.
+
+<PRINT_STATEMENT>           ::= "print""("<CONDITIONAL_OR>")"";".
+
+<CONDITIONAL_OR>            ::= <CONDITIONAL_AND>
+                              | <CONDITIONAL_OR> or <CONDITIONAL_END>.
+
+<CONDITIONAL_AND>           ::= <EQUALITY_EXPR>
+                              | <CONDITIONAL_AND> and <EQUALITY_EXPR>.
+
+<EQUALITY_EXPR>             ::= <RELATIONAL_EXPR>
+                              | <EQUALITY_EXPR> "==" <RELATIONAL_EXPR>
+                              | <EQUALITY_EXPR> "!=" <RELATIONAL_EXPR>.
+
+<RELATIONAL_EXPR>           ::= <ADD_SUB_EXPR>
+                              | <ADD_SUB_EXPR> "<" <ADD_SUB_EXPR>
+                              | <ADD_SUB_EXPR> ">" <ADD_SUB_EXPR>.
+
+<ADD_SUB_EXPR>              ::= <MULT_DIV_MOD_EXPR>
+                              | <ADD_SUB_EXPR> "+" <MULT_DIV_MOD_EXPR>
+                              | <ADD_SUB_EXPR> "-" <MULT_DIV_MOD_EXPR>.
+
+<MULT_DIV_MOD_EXPR>         ::= <UNARY_EXPR>
+                              | <MULT_DIV_MOD_EXPR> "*" <UNARY_EXPR>
+                              | <MULT_DIV_MOD_EXPR> "div" <UNARY_EXPR>
+                              | <MULT_DIV_MOD_EXPR> "mod" <UNARY_EXPR>.
+
+<UNARY_EXPR>                ::= <EXPONENTIAL_EXPR>
+                              | "-"<UNARY_EXPR>
+                              | <NOT_EXPR>.
+
+<PRE_INC_EXPR>              ::= "++"<IDENTIFIER>.
+
+<PRE_DEC_EXPR>              ::= "--"<IDENTIFIER>.
+
+<EXPONENTIAL_EXPR>          ::= <LITERAL>
+                              | <LITERAL> "^" <EXPONENTIAL_EXPR>.
+
+<NOT_EXPR>                  ::= "not" <BOOL_LIT>.
+
+<POST_INC_EXPR>             ::= <IDENTIFIER>"++".
+
+<POST_DEC_EXPR>             ::= <IDENTIFIER>"--".
+
+<ABS>                       ::= "|"<ADD_SUB_EXPR>"|".
+
+<LITERAL>                   ::= integer
+                              | bool
+                              | <IDENTIFIER>
+                              | <BRACKET>
+                              | <ABS>.
+
+<BRACKET>                   ::= "("<CONDITIONAL_OR>")".
+
+<IDENTIFIER>                ::= id.

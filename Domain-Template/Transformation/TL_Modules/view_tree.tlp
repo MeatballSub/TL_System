@@ -6,10 +6,10 @@ module BasicView(precision = 0, verbosity=0)
 
 // ===========================================================================
 strategy main:     
-    <prog>_in -> <prog>_in
+    <WFC_START>_in -> <WFC_START>_in
     if { 
-                      sml.prettyprint(<prog>_in)
-            andalso sml.toDot(<prog>_in)
+                      sml.prettyprint(<WFC_START>_in)
+            andalso sml.toDot(<WFC_START>_in)
     }
         
 
