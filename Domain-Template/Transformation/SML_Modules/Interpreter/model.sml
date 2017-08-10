@@ -39,18 +39,48 @@ fun error msg = (print msg; raise runtime_error);
    incremented. *)
 val initialModel = ( []:env, 0:loc, []:store )
 
-fun new(env, loc, store) = (env, loc + 1, store);
+fun typeToString BOOL = "bool"
+  | typeToString INT = "integer"
+  | typeToString ERROR = "error";
 
-fun updateEnvironment(id, a_type, a_loc, (env, location, s)) =
+(*
+fun DVtoString(value:bool) = if value then "true" else "false"
+  | DVtoString(value:int)  = Int.toString value;
+*)
+
+fun envEntryToString (id, t, loc) = "(" ^ id ^ "," ^ typeToString t ^ "," ^ Int.toString loc ^ ")";
+fun storeEntryToString(loc, value) = "(" ^ Int.toString loc ^ ")";
+
+fun showStore [] = print "\n\n"
+  | showStore(s1::s) = (print("\n" ^ storeEntryToString s1); showStore s);
+
+fun showEnv [] = print "\n\n"
+  | showEnv(e1::e) = (print("\n" ^ envEntryToString e1); showEnv e);
+
+fun showLoc(l:loc) = print("Location = " ^ Int.toString l ^ "\n\n");
+
+fun showModel(e:env, l:loc, s:store) =
+    let
+        val e1 = showEnv(e);
+        val l1 = showLoc(l);
+        val s1 = showStore(s);
+    in
+        (e, l, s)
+    end
+;
+
+fun new(e:env, loc1:loc, s:store) = loc1 + 1;
+
+fun updateEnvironment(id, a_type, a_loc, (e:env, location:loc, s:store)) =
     let
         fun aux(id, a_type, a_loc, []) = [(id, a_type, a_loc)]
-          | aux (id, a_type, a_loc, (id1, type1, loc1)::env) =
+          | aux (id, a_type, a_loc, (id1, type1, loc1)::e) =
                 if id=id1 then
-                    (id, a_type, a_loc)::env
+                    (id1, a_type, a_loc)::e
                 else
-                    (id1, type1, loc1)::aux(id, a_type, a_loc, env);
+                    (id1, type1, loc1)::aux(id, a_type, a_loc, e);
     in
-        aux(id, a_type, a_loc, env)
+        (aux(id, a_type, a_loc, e), location, s)
     end
 ;
 

@@ -38,7 +38,7 @@ integer      = 0 | {posDigit}{digit}*;
 
 alpha        = [A-Za-z];
 alphanumeric = [A-Za-z0-9_];
-id = {alpha}{alphanumeric}*;
+identifier = {alpha}{alphanumeric}*;
 
 ws           = [\  \t \n];
 
@@ -84,7 +84,7 @@ comment      = "//" .* ;
 
 {integer}                     => ( SHELL("integer"   , yytext,     getNextTokenPos(yytext))    );
 {boolean}                     => ( SHELL("boolean"   , yytext,     getNextTokenPos(yytext)));
-{id}                          => ( SHELL("id"        , yytext,     getNextTokenPos(yytext))    );
+{identifier}                  => ( SHELL("identifier"        , yytext,     getNextTokenPos(yytext))    );
 
 
 

@@ -3,114 +3,86 @@ USE_LR_PARSER
 WFC_START
 
 (* ======================================================================================================= *)
-<WFC_START>                 ::= <BLOCK>
-                              | <EPSILON>.
+<WFC_START>             ::= <STATEMENT_LIST>.
 
-<EPSILON>                   ::= .
+<STATEMENT_LIST>        ::= <EPSILON>
+                          | <STATEMENT><STATEMENT_LIST>.
 
-<BLOCK>                     ::= "{" <BLOCK_STATEMENTS> "}".
+<EPSILON>               ::= .
 
-<BLOCK_STATEMENTS>          ::= <BLOCK_STATEMENT><BLOCK_STATEMENTS>
-                              | <EPSILON>.
+<STATEMENT>             ::= <DECLARATION_STATEMENT> ";"
+                          | <ASSIGNMENT_STATEMENT> ";"
+                          | <BLOCK>
+                          | <CONDITIONAL_STATEMENT>
+                          | <WHILE_LOOP>
+                          | <FOR_LOOP>
+                          | <PRINT_STATEMENT> ";".
 
-<BLOCK_STATEMENT>           ::= <DECLARATION_STMT>
-                              | <STATEMENT>.
+<DECLARATION_STATEMENT> ::= int identifier
+                          | bool identifier
+                          | int identifier "=" <EXPRESSION>
+                          | bool identifier "=" <EXPRESSION>.
 
-<DECLARATION_STMT>          ::= <DECLARATION> ";".
+<ASSIGNMENT_STATEMENT>  ::= identifier "=" <EXPRESSION>
+                          | <PREFIX_EXPRESSION>
+                          | <POSTFIX_EXPRESSION>.
 
-<DECLARATION>               ::= <TYPE> id
-                              | <TYPE> id "=" <EXPRESSION>.
+<BLOCK>                 ::= "{" STATEMENT_LIST "}".
 
-<TYPE>                      ::= "int"
-                              | "bool".
+<PREFIX_EXPRESSION>     ::= "++" identifier
+                          | "--" identifier.
 
-<STATEMENT>                 ::= <IF_THEN_ELSE>
-                              | <WHILE_LOOP>
-                              | <FOR_LOOP>
-                              | <EXPRESSION_STMT>
-                              | <BLOCK>
-                              | <PRINT_STATEMENT>.
+<POSTFIX_EXPRESSION>    ::= identifier "++"
+                          | identifier "--".
 
-<EXPRESSION>                ::= <ASSIGNMENT_EXPR>.
+<PRINT_STATEMENT>       ::= "print" "(" <EXPRESSION> ")".
 
-<ASSIGNMENT_EXPR>           ::= <CONDITIONAL_OR_EXPR>
-                              | <ASSIGNMENT>.
+<CONDITIONAL_STATEMENT> ::= "if" "(" <EXPRESSION> ")" <BLOCK>
+                          | "if" "(" <EXPRESSION> ")" <BLOCK> "else" <BLOCK>.
 
-<ASSIGNMENT>                ::= id "=" <CONDITIONAL_OR_EXPR>.
+<FOR_LOOP>              ::= "for" "(" <FOR_INIT> ";" <EXPRESSION> ";" <ASSIGNMENT_STATEMENT> ")" <BLOCK>.
 
-<CONDITIONAL_OR_EXPR>       ::= <CONDITIONAL_AND_EXPR>
-                              | <CONDITIONAL_OR_EXPR> "or" <CONDITIONAL_AND_EXPR>.
+<FOR_INIT>              ::= <ASSIGNMENT_STATEMENT>
+                          | <DECLARATION_STATEMENT>
 
-<CONDITIONAL_AND_EXPR>      ::= <EQUALITY_EXPR>
-                              | <CONDITIONAL_AND_EXPR> "and" <EQUALITY_EXPR>.
+<WHILE_LOOP>            ::= "while" "(" <EXPRESSION> ")" <BLOCK>.
 
-<EQUALITY_EXPR>             ::= <RELATIONAL_EXPR>
-                              | <EQUALITY_EXPR> "==" <RELATIONAL_EXPR>
-                              | <EQUALITY_EXPR> "!=" <RELATIONAL_EXPR>.
+<EXPRESSION>            ::= <EXPRESSION> "or" <DISJUNCTION>
+                          | <DISJUNCTION>.
 
-<RELATIONAL_EXPR>           ::= <ADDITIVE_EXPR>
-                              | <RELATIONAL_EXPR> "<" <ADDITIVE_EXPR>
-                              | <RELATIONAL_EXPR> ">" <ADDITIVE_EXPR>
-                              | <RELATIONAL_EXPR> "<=" <ADDITIVE_EXPR>
-                              | <RELATIONAL_EXPR> ">=" <ADDITIVE_EXPR>.
+<DISJUNCTION>           ::= <DISJUNCTION> "and" <EQUALITY>
+                          | <EQUALITY>.
 
-<ADDITIVE_EXPR>             ::= <MULTIPLICATIVE_EXPR>
-                              | <ADDITIVE_EXPR> "+" <MULTIPLICATIVE_EXPR>
-                              | <ADDITIVE_EXPR> "-" <MULTIPLICATIVE_EXPR>.
+<EQUALITY>              ::= <EQUALITY> "==" <RELATIONAL>
+                          | <EQUALITY> "!=" <RELATIONAL>
+                          | <RELATIONAL>
+                          | boolean.
 
-<MULTIPLICATIVE_EXPR>       ::= <UNARY_EXPR>
-                              | <MULTIPLICATIVE_EXPR> "*" <UNARY_EXPR>
-                              | <MULTIPLICATIVE_EXPR> "div" <UNARY_EXPR>
-                              | <MULTIPLICATIVE_EXPR> "mod" <UNARY_EXPR>.
+<RELATIONAL>            ::= <RELATIONAL> "<" <ADDITIVE>
+                          | <RELATIONAL> "<=" <ADDITIVE>
+                          | <RELATIONAL> ">" <ADDITIVE>
+                          | <RELATIONAL> ">=" <ADDITIVE>
+                          | <ADDITIVE>.
 
-<UNARY_EXPR>                ::= <PREINCREMENT_EXPR>
-                              | <PREDECREMENT_EXPR>
-                              | "-" <UNARY_EXPR>
-                              | <UNARY_EXPR_NOT_PLUS_MINUS>.
+<ADDITIVE>              ::= <ADDITIVE> "+" <MULTIPLICATIVE>
+                          | <ADDITIVE> "-" <MULTIPLICATIVE>
+                          | <MULTIPLICATIVE>.
 
-<UNARY_EXPR_NOT_PLUS_MINUS> ::= <POSTFIX_EXPR>
-                              | "not" <UNARY_EXPR>.
+<MULTIPLICATIVE>        ::= <MULTIPLICATIVE> "*" <EXPONENTIAL>
+                          | <MULTIPLICATIVE> "div" <EXPONENTIAL>
+                          | <MULTIPLICATIVE> "mod" <EXPONENTIAL>
+                          | <EXPONENTIAL>.
 
-<PREINCREMENT_EXPR>         ::= "++" <UNARY_EXPR>.
+<EXPONENTIAL>           ::= <UNARY> "^" <EXPONENTIAL>
+                          | <UNARY>.
 
-<PREDECREMENT_EXPR>         ::= "--" <UNARY_EXPR>.
+<UNARY>                 ::= "-" <PRIMARY>
+                          | "not" <PRIMARY>
+                          | <PRIMARY>.
 
-<POSTFIX_EXPR>              ::= <EXPONENTIAL_EXPR>
-                              | <POSTINCREMENT_EXPR>
-                              | <POSTDECREMENT_EXPR>.
-
-<PRIMARY>                   ::= <LITERAL>
-                              | "(" <EXPRESSION> ")".
-
-<LITERAL>                   ::= integer
-                              | boolean.
-
-<POSTINCREMENT_EXPR>        ::= <POSTFIX_EXPR> "++".
-
-<POSTDECREMENT_EXPR>        ::= <POSTFIX_EXPR> "--".
-
-<EXPONENTIAL_EXPR>          ::= <ABS_EXPR>
-                              | <EXPONENTIAL_EXPR> "^" <ABS_EXPR>.
-
-<ABS_EXPR>                  ::= id
-                              | <PRIMARY>
-                              | "|" <ADDITIVE_EXPR> "|".
-
-<IF_THEN_ELSE>              ::= "if" "(" <EXPRESSION> ")" <BLOCK>
-                              | "if" "(" <EXPRESSION> ")" <BLOCK> "else" <BLOCK>.
-
-<WHILE_LOOP>                ::= "while" "(" <EXPRESSION> ")" <BLOCK> .
-
-<FOR_LOOP>                  ::= "for" "(" <FOR_INIT> ";" <EXPRESSION> ";" <STATEMENT_EXPR> ")" <BLOCK>.
-
-<PRINT_STATEMENT>           ::= "print" "(" <CONDITIONAL_OR_EXPR> ")" ";".
-
-<FOR_INIT>                  ::= <STATEMENT_EXPR>
-                              | <DECLARATION>.
-
-<EXPRESSION_STMT>           ::= <STATEMENT_EXPR> ";".
-
-<STATEMENT_EXPR>            ::= <ASSIGNMENT>
-                              | <PREINCREMENT_EXPR>
-                              | <PREDECREMENT_EXPR>
-                              | <POSTFIX_EXPR>.
+<PRIMARY>               ::= identifier
+                          | integer
+                          | "(" <EXPRESSION> ")"
+                          | "|" <EXPRESSION> "|"
+                          | <PREFIX_EXPRESSION>
+                          | <POSTFIX_EXPRESSION>. 

@@ -11,10 +11,11 @@ open CONCRETE_REPRESENTATION;
     expression notation we used in M2 to the actual SML tree patterns used in the TL System. See the comments in
     the semantics.sml file for a more detailed discussion on this topic. 
     
-    M ( itree(inode("BLOCK_STATEMENT",_), [ declarationStmt1:DECLARATION_STMT ]), m0) =
 *)
+fun typeCheck( itree(inode("WFC_START",_), [ stmt_list ] ), m) = m
 
 
+(*
 fun typeCheck( itree(inode("WFC_START",_), [ BLOCK ] ), m0) =
         let
             val m1 = typeCheck(BLOCK, m0);
@@ -39,7 +40,6 @@ fun typeCheck( itree(inode("WFC_START",_), [ BLOCK ] ), m0) =
         m2
     end
 
-(*
   | typeCheck ( itree(inode("BLOCK_STATEMENT",_), [ declarationStmt1:DECLARATION_STMT ]), m0) =
     let
         val m1 = typeCheck(declarationStmt1, m0);

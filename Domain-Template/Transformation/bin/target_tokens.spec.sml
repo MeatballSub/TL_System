@@ -737,7 +737,7 @@ let fun continue() = lex() in
  end
 | 116 => let val yytext=yymktext() in (*#line 86.35 "C:\Users\Kevin\Desktop\TL_System\M3_Package\Domain-Template\Transformation\bin\target_tokens.spec"*) SHELL("boolean"   , yytext,     getNextTokenPos(yytext))(*#line 738.1 "C:\Users\Kevin\Desktop\TL_System\M3_Package\Domain-Template\Transformation\bin\target_tokens.spec.sml"*)
  end
-| 119 => let val yytext=yymktext() in (*#line 87.35 "C:\Users\Kevin\Desktop\TL_System\M3_Package\Domain-Template\Transformation\bin\target_tokens.spec"*) SHELL("id"        , yytext,     getNextTokenPos(yytext))    (*#line 740.1 "C:\Users\Kevin\Desktop\TL_System\M3_Package\Domain-Template\Transformation\bin\target_tokens.spec.sml"*)
+| 119 => let val yytext=yymktext() in (*#line 87.35 "C:\Users\Kevin\Desktop\TL_System\M3_Package\Domain-Template\Transformation\bin\target_tokens.spec"*) SHELL("identifier"        , yytext,     getNextTokenPos(yytext))    (*#line 740.1 "C:\Users\Kevin\Desktop\TL_System\M3_Package\Domain-Template\Transformation\bin\target_tokens.spec.sml"*)
  end
 | 12 => let val yytext=yymktext() in (*#line 53.35 "C:\Users\Kevin\Desktop\TL_System\M3_Package\Domain-Template\Transformation\bin\target_tokens.spec"*) SHELL(yytext , yytext, getNextTokenPos(yytext))    (*#line 742.1 "C:\Users\Kevin\Desktop\TL_System\M3_Package\Domain-Template\Transformation\bin\target_tokens.spec.sml"*)
  end
