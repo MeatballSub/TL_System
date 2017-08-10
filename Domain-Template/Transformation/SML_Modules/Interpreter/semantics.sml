@@ -63,14 +63,57 @@ open CONCRETE_REPRESENTATION;
             (3) the second child is a semi-colon   
 *)
 
-fun M(  itree(inode("prog",_), 
-                [ 
-                    stmt_list
-                ] 
-             ), 
-        m
-    ) = m
-        
+(*
+fun M( [[stmt1 ; stmtList1 ]], m0) = 
+    let
+        val m1 = M( stmt1, m0)
+        val m2 = M(stmtList1, m1)
+    in
+        m2
+    end
+;
+*)
+
+
+fun M( itree(inode("WFC_START",_), [ block1 ]), m0) = 
+    let
+        val m1 = M(block1, m0);
+    in
+        m1
+    end
+    
+  | M( itree(inode("WFC_START",_), []), m0) = m0
+  
+  | M( itree(inode("BLOCK",_), [ itree(inode("{",_),[]), blockStatements1, itree(inode("}",_),[]) ]), (env0, loc0, s0)) =
+    let
+        val (env1, loc1, s1) = M(blockStatements1, (env0, loc0, s0));
+        val m2 = (env0, loc0, s1);
+    in
+        m2
+    end
+
+  | M ( itree(inode("BLOCK_STATEMENTS",_), [ blockStatement1, blockStatements1 ]), m0) =
+    let
+        val m1 = M(blockStatement1, m0);
+        val m2 = M(blockStatements1, m1);
+    in
+        m2
+    end
+    
+  | M ( itree(inode("BLOCK_STATEMENT",_), [ blockStatement1 ]), m0) =
+    let
+        val m1 = M(blockStatement1, m0);
+    in
+        m1
+    end
+    
+  | M ( itree(inode("DECLARATION_STMT",_),[type1, id]),m0) =
+    let
+        val m1 = updateEnvironment(id, INT, new(m0), m0)
+    in
+        m1
+    end
+  
   | M(  itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
   | M _ = raise Fail("error in Semantics.M - this should never occur")

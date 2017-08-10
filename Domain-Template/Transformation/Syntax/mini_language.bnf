@@ -8,11 +8,10 @@ WFC_START
 
 <EPSILON>                   ::= .
 
-<BLOCK>                     ::= "{" <BLOCK_STATEMENTS> "}"
-                              | "{" <EPSILON> "}".
+<BLOCK>                     ::= "{" <BLOCK_STATEMENTS> "}".
 
-<BLOCK_STATEMENTS>          ::= <BLOCK_STATEMENT>
-                              | <BLOCK_STATEMENTS><BLOCK_STATEMENT>.
+<BLOCK_STATEMENTS>          ::= <BLOCK_STATEMENT><BLOCK_STATEMENTS>
+                              | <EPSILON>.
 
 <BLOCK_STATEMENT>           ::= <DECLARATION_STMT>
                               | <STATEMENT>.
@@ -66,7 +65,6 @@ WFC_START
 
 <UNARY_EXPR>                ::= <PREINCREMENT_EXPR>
                               | <PREDECREMENT_EXPR>
-                              | "+" <UNARY_EXPR>
                               | "-" <UNARY_EXPR>
                               | <UNARY_EXPR_NOT_PLUS_MINUS>.
 
