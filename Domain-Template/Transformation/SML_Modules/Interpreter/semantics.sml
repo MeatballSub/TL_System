@@ -183,7 +183,39 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
     in
         m3
     end
+  | M ( itree(inode("ASSIGNMENT_STATEMENT",_), [ itree(inode("identifier",_), [id1]), itree(inode("=",_), []), expr1 ]), m0) =
+    let
+        val (v1, m1) = E(expr1, m0)
+        val loc = getLoc(accessEnv(getLeaf(id1), m1))
+        val m2 = updateStore(loc,v1,m1)
+    in
+        m2
+    end
+  | M ( itree(inode("ASSIGNMENT_STATEMENT",_), [ prePostFix ]), m0) =
+    let
+        val m1 =  M(prePostFix, m0)
+    in
+        m1
+    end
+  | M ( itree(inode("BLOCK",_), [ itree(inode("{",_), []), stmtList, itree(inode("}",_), []) ]), m0) =
+    let
+        val m1 =  M(stmtList, m0)
+    in
+        m1 
+    end
+    
+   | M ( itree(inode("PREFIX_EXPRESSION",_), [ itree(inode("++",_), []), identifier ]), m0) =
+    let
+        val m1 =  M(prePostFix, m0)
+    in
+        m1
+    end   
+ (*   
+<PREFIX_EXPRESSION>     ::= "++" identifier
+                          | "--" identifier.
 
+<POSTFIX_EXPRESSION>    ::= identifier "++"
+                          | identifier "--". *)
   | M ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
   | M _ = raise Fail("error in Semantics.M - this should never occur");
