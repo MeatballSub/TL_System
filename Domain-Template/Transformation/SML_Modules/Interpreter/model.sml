@@ -53,9 +53,6 @@ fun DVtoInt(Integer value) = valOf(Int.fromString(Int.toString(value)))
 
 fun envEntryToString (id, t, loc) = "(" ^ id ^ "," ^ typeToString t ^ "," ^ Int.toString loc ^ ")";
 fun storeEntryToString(loc, value) = "(" ^ Int.toString loc ^ "," ^ DVtoString(value) ^ ")";
-(*
-fun storeEntryToString(loc, value) = "(" ^ Int.toString loc ^ ")";
-*)
 
 fun showStore [] = print "\n\n"
   | showStore(s1::s) = (print("\n" ^ storeEntryToString s1); showStore s);
