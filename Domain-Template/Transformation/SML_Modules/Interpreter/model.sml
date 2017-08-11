@@ -105,20 +105,20 @@ fun updateStore(a_loc, a_value, (e:env, location:loc, s:store)) =
     end
 ;
 
-fun accessEnv (id1, (env, location, s)) =
+fun accessEnv (id1, (e, location, s)) =
     let
         val msg = "Error: accessEnv " ^ id1 ^ " not found.";
         fun aux [] = error msg
-          | aux ((id,t,loc)::env) = if id1=id then (t, loc)
-                                              else aux env;
+          | aux ((id,t,loc)::e) = if id1=id then (t, loc)
+                                            else aux e;
     in
-        aux env
+        aux e
     end
 ;
 
-fun accessStore (loc1, (env, location, s)) =
+fun accessStore (loc1, (e, location, s)) =
     let
-        val msg = "Error: accessStore " ^ loc1 ^ " not found.";
+        val msg = "Error: accessStore " ^ Int.toString(loc1) ^ " not found.";
         fun aux [] = error msg
           | aux ((loc,dv)::s) = if loc1=loc then dv
                                             else aux s;
