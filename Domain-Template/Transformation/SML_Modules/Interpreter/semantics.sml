@@ -151,7 +151,7 @@ fun E ( itree(inode("EXPRESSION",_), [ disjunction ]), m0) =
         val (v1, m1) = E(relational, m0)
         val (v2, m2) = E(additive, m1)       
     in
-        if v1 < v2 then (true, m2) else (false, m0)
+        if (v1 < v2) then (true, m2) else (false, m0)
     end
     
    | E ( itree(inode("RELATIONAL",_), [relational, itree(inode(">", _),[]), additive]), m0) =
@@ -243,7 +243,7 @@ fun E ( itree(inode("EXPRESSION",_), [ disjunction ]), m0) =
         val (v1, m1) = E(unary, m0)
         val (v2, m2) = E(exponential, m1)       
     in
-        (expt(v1,v2), m2)
+        (0,m2)(* (Math.pow(v1,v2), m2) *)
     end
 
    | E ( itree(inode("UNARY",_), [ primary ]), m0) =
