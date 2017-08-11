@@ -77,7 +77,28 @@ fun M( itree(inode("WFC_START",_), [ block1 ]), m0) = m0
 itree(inode("{",_),[])
 *)
 
+(*<EXPRESSION>            ::= <EXPRESSION> "or" <DISJUNCTION>
+                          | <DISJUNCTION>.
+
+<DISJUNCTION>           ::= <DISJUNCTION> "and" <EQUALITY>
+                          | <EQUALITY>.*)
+
 fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
+  | E ( itree(inode("EXPRESSION",_), [expr ,itree(inode("or",_), []), disjunction]), m0) =
+    let
+        val (v1, m1) = E(expr, m0)
+        val (v3, m3) = if DVtoBool(v1) then (v1,m1)
+                       else
+                            let
+                                val (v2,m2) = E(disjunction, m0)
+                                if DVtoBool(v2) then (v2,m2) else (v1,m1)
+                            in
+                                (v4,m4)
+                            end
+                                    
+    in
+        (v3, m3)
+    end
   | E ( itree(inode("DISJUNCTION",_), [equality1]), m0) = E(equality1, m0)
   | E ( itree(inode("EQUALITY",_), [relational1]), m0) = E(relational1, m0)
 
