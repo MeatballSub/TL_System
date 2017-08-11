@@ -1,2 +1,8 @@
+
 int c = -5;
 c = 8;
+
+int c = -5;
+int d = ++c;
+int e = --d;
+
