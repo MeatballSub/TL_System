@@ -352,20 +352,20 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
         m1
     end
     
-  | M ( itree(inode("BLOCK",_), [ itree(inode("{",_), []), stlst, itree(inode("}",_), []) ]), m0) =
+  | M ( itree(inode("BLOCK",_), [ itree(inode("{",_), []), statementList, itree(inode("}",_), []) ]), m0) =
     let
-        val m1 =  M(stlst, m0)
+        val m1 =  M(statementList, m0)
     in
         m1 
     end
 
-(*  | M ( itree(inode("PRINT_STATEMENT",_), [prnt, itree(inode("(",_), []), expr, itree(inode(")",_), []) ]), m0) =
+  | M ( itree(inode("PRINT_STATEMENT",_), [prnt, itree(inode("(",_), []), expr, itree(inode(")",_), []) ]), m0) =
     let
         val (v1,m1) = E(expr, m0)
         val p = print(DVtoString(v1));
     in
         m1
-    end*)
+    end
 
  (* | M ( itree(inode("CONDITIONAL_STATEMENT",_), [itree(inode("if",_), []),itree(inode("(",_), []), expr, itree(inode(")",_), []), blk ]), m0) =
     let
