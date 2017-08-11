@@ -1,6 +1,5 @@
-bool a = true;
-bool b = not a;
-bool c = false;
-bool d = not c;
-bool e = not true;
-bool f = not false;
+int a = 5;
+int b = a++;
+int c = b--;
+int d = ++c;
+int e = --d;
