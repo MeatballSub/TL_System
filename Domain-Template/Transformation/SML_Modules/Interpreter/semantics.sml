@@ -85,6 +85,16 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
   | E ( itree(inode("ADDITIVE",_),[multiplicative1]),m0) = E(multiplicative1, m0)
   | E ( itree(inode("MULTIPLICATIVE",_),[exponential1]),m0) = E(exponential1, m0)
   | E ( itree(inode("EXPONENTIAL",_),[unary1]),m0) = E(unary1, m0)
+  | E ( itree(inode("EXPONENTIAL",_),[unary1, itree(inode("^",_),[]),exponential1]),m0) =
+    let
+        fun power(a,b) = if (b=0) then 1 else power(a,b-1)*a;
+        val (v1, m1) = E(exponential1, m0);
+        val (v2, m2) = E(unary1, m1);
+        val v3 = Integer(power(DVtoInt(v2), DVtoInt(v1)));
+    in
+        (v3, m2)
+    end
+  
   | E ( itree(inode("UNARY",_),[primary1]),m0) = E(primary1, m0)
   | E ( itree(inode("UNARY",_),[itree(inode("-",_),[]), primary1]),m0) = 
     let
