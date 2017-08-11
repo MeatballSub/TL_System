@@ -1,17 +1,10 @@
-<<<<<<< HEAD
-
 int c = -5;
 c = 8;
-
 int c = -5;
 int d = ++c;
 int e = --d;
 
-=======
-bool a = true;
-bool b = not a;
-bool c = false;
-bool d = not c;
-bool e = not true;
-bool f = not false;
->>>>>>> github/kevin
+
+++c;
+--e;
+

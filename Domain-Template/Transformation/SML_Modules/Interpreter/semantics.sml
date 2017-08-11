@@ -229,18 +229,20 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
         m1 
     end
     
-   | M ( itree(inode("PREFIX_EXPRESSION",_), [ itree(inode("++",_), []), identifier ]), m0) =
+  | M ( itree(inode("PREFIX_EXPRESSION",_), [ expr1 ]), m0) =
     let
-        val m1 =  M(prePostFix, m0)
+        val (v1,m1) =  E(expr1, m0)
     in
         m1
-    end   
- (*   
-<PREFIX_EXPRESSION>     ::= "++" identifier
-                          | "--" identifier.
+    end
+  | M ( itree(inode("POSTFIX_EXPRESSION",_), [ expr1 ]), m0) =
+    let
+        val (v1,m1) =  E(expr1, m0)
+    in
+        m1
+    end
 
-<POSTFIX_EXPRESSION>    ::= identifier "++"
-                          | identifier "--". *)
+
   | M ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
   | M _ = raise Fail("error in Semantics.M - this should never occur");
