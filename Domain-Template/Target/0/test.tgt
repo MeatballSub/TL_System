@@ -1,3 +1,23 @@
-int a = 4*3;
-int b = 12 div 4;
-int c = 13 mod 5;
+int a = 4-3;
+int b = 4+3;
+int c = 1;
+int d = 7;
+
+bool e = a < b;
+bool f = b < a;
+
+bool g = a > b;
+bool h = b > a;
+
+bool i = a <= b;
+bool j = a <= c;
+bool k = b <= a;
+bool l = c <= a;
+
+bool m = a >= b;
+bool n = a >= c;
+bool o = b >= a;
+bool p = c >= a;
+
+
+
