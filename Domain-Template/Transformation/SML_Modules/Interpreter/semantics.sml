@@ -86,7 +86,25 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
   | E ( itree(inode("MULTIPLICATIVE",_),[exponential1]),m0) = E(exponential1, m0)
   | E ( itree(inode("EXPONENTIAL",_),[unary1]),m0) = E(unary1, m0)
   | E ( itree(inode("UNARY",_),[primary1]),m0) = E(primary1, m0)
+  | E ( itree(inode("UNARY",_),[itree(inode("-",_),[]), primary1]),m0) = 
+    let
+        val (v1, m1) = E(primary1, m0);
+        val v2 = Integer(0 - (DVtoInt(v1)));
+    in
+        (v2, m1)
+    end
+    
   | E ( itree(inode("PRIMARY",_),[primary1]),m0) = E(primary1, m0)
+  | E ( itree(inode("PRIMARY",_),[itree(inode("(",_),[]), expr1, itree(inode(")",_),[])]),m0) = E(expr1, m0)
+
+  | E ( itree(inode("PRIMARY",_),[itree(inode("|",_),[]), expr1, itree(inode("|",_),[])]),m0) = 
+    let
+        val (v1, m1) = E(expr1, m0);
+        val v2 = Integer(abs(DVtoInt(v1)));
+    in
+        (v2, m1)
+    end
+    
   | E ( itree(inode("integer",_),[int1]),m0) = 
     let
         val v1 = valOf(Int.fromString(getLeaf(int1)));
@@ -110,6 +128,7 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
 fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) = 
     let
         val m1 = M(stmtlist1, m0);
+        val p1 = showModel(m1);
     in
         m1
     end
@@ -134,7 +153,6 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
   | M ( itree(inode("DECLARATION_STATEMENT",_), [ itree(inode("int",_), []), id1 ]), m0) =
     let
         val m1 = updateEnvironment(getLeaf(id1), INT, new(m0), m0);
-        val p = showModel(m1);
     in
         m1
     end
@@ -152,7 +170,6 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
         val (v, m2) = E(expr1, m1);
         val loc = getLoc(accessEnv(getLeaf(id1), m2));
         val m3 = updateStore(loc, v, m2);
-        val p1 = showModel(m3);
     in
         m3
     end

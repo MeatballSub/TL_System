@@ -42,9 +42,14 @@ val initialModel = ( []:env, 0:loc, []:store )
 fun typeToString BOOL = "bool"
   | typeToString INT = "integer"
   | typeToString ERROR = "error";
-
+  
 fun DVtoString(Boolean value) = Bool.toString value
   | DVtoString(Integer value) = Int.toString value;
+  
+fun DVtoBool(Boolean value) = if value then true else false
+  | DVtoBool(Integer value) = error "bool cannot be int";
+fun DVtoInt(Integer value) = valOf(Int.fromString(Int.toString(value)))
+  | DVtoInt(Boolean value) = error "int cannot be bool";
 
 fun envEntryToString (id, t, loc) = "(" ^ id ^ "," ^ typeToString t ^ "," ^ Int.toString loc ^ ")";
 fun storeEntryToString(loc, value) = "(" ^ Int.toString loc ^ "," ^ DVtoString(value) ^ ")";
