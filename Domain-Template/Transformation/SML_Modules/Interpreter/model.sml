@@ -43,13 +43,13 @@ fun typeToString BOOL = "bool"
   | typeToString INT = "integer"
   | typeToString ERROR = "error";
 
-(*
+
 fun DVtoString(value:bool) = if value then "true" else "false"
-  | DVtoString(value:int)  = Int.toString value;
-*)
+  | DVtoString(value:int)  = Int.toString value
+  | DVtoString(value:loc)  = Int.toString value;
 
 fun envEntryToString (id, t, loc) = "(" ^ id ^ "," ^ typeToString t ^ "," ^ Int.toString loc ^ ")";
-fun storeEntryToString(loc, value) = "(" ^ Int.toString loc ^ ")";
+fun storeEntryToString(loc, value) = "(" ^ Int.toString loc ^ "," ^ DVtoString value ^ ")";
 
 fun showStore [] = print "\n\n"
   | showStore(s1::s) = (print("\n" ^ storeEntryToString s1); showStore s);
@@ -79,12 +79,18 @@ fun updateEnvironment(id, a_type, a_loc, (e:env, location:loc, s:store)) =
                     (id1, a_type, a_loc)::e
                 else
                     (id1, type1, loc1)::aux(id, a_type, a_loc, e);
+        fun aux2(id, l, []) = l + 1
+          | aux2(id, l, (id1, type1, loc1)::e) =
+                if id=id1 then
+                    l
+                else
+                    aux2(id, l, e);
     in
-        (aux(id, a_type, a_loc, e), location, s)
+        (aux(id, a_type, a_loc, e), aux2(id, location, e), s)
     end
 ;
 
-fun updateStore(a_loc, a_value, (env, location, s)) = 
+fun updateStore(a_loc, a_value, (e:env, location:loc, s:store)) = 
     let
         fun aux (loc, value, []) = [(loc, value)]
           | aux (loc, value, (loc1, value1)::s) =
@@ -93,7 +99,7 @@ fun updateStore(a_loc, a_value, (env, location, s)) =
                 else
                     (loc1, value1)::aux(loc, value, s);
     in
-        aux(a_loc, a_value, s)
+        (e, location, aux(a_loc, a_value, s))
     end
 ;
 

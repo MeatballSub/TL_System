@@ -77,6 +77,15 @@ fun M( itree(inode("WFC_START",_), [ block1 ]), m0) = m0
 itree(inode("{",_),[])
 *)
 
+fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
+  | E ( itree(inode("DISJUNCTION",_), [equality1]), m0) = E(equality1, m0)
+  | E ( itree(inode("EQUALITY",_), [relational1]), m0) = E(relational1, m0)
+  | E ( itree(inode("boolean",_),[bool1]),m0) = if getLeaf(bool1) = "true" then (Boolean(true), m0) else (Boolean(false), m0)
+  | E ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn E root = " ^ x_root ^ "\n\n")
+  | E _ = raise Fail("error in Semantics.E - this should never occur");
+
+
+
 fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) = 
     let
         val m1 = M(stmtlist1, m0);
@@ -109,9 +118,28 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
         m1
     end
     
+  | M ( itree(inode("DECLARATION_STATEMENT",_), [ itree(inode("bool",_), []), id1 ]), m0) =
+    let
+        val m1 = updateEnvironment(getLeaf(id1), BOOL, new(m0), m0);
+    in
+        m1
+    end
+
+  | M ( itree(inode("DECLARATION_STATEMENT",_), [ itree(inode("bool",_), []), id1, itree(inode("=",_), []), expr1 ]), m0) =
+    let
+        val m1 = updateEnvironment(getLeaf(id1), BOOL, new(m0), m0);
+        val (v, m2) = E(expr1, m1);
+        val loc = getLoc(accessEnv(getLeaf(id1), m2));
+        val m3 = updateStore(loc, v, m2);
+        val p = showModel(m3);
+    in
+        m3
+    end
+
   | M ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
   | M _ = raise Fail("error in Semantics.M - this should never occur");
+  
 (* =========================================================================================================== *)
 end (* struct *)
 (* =========================================================================================================== *)

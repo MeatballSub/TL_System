@@ -43,7 +43,7 @@ WFC_START
 <FOR_LOOP>              ::= "for" "(" <FOR_INIT> ";" <EXPRESSION> ";" <ASSIGNMENT_STATEMENT> ")" <BLOCK>.
 
 <FOR_INIT>              ::= <ASSIGNMENT_STATEMENT>
-                          | <DECLARATION_STATEMENT>
+                          | <DECLARATION_STATEMENT>.
 
 <WHILE_LOOP>            ::= "while" "(" <EXPRESSION> ")" <BLOCK>.
 
