@@ -80,11 +80,120 @@ itree(inode("{",_),[])
 fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
   | E ( itree(inode("DISJUNCTION",_), [equality1]), m0) = E(equality1, m0)
   | E ( itree(inode("EQUALITY",_), [relational1]), m0) = E(relational1, m0)
-  | E ( itree(inode("boolean",_),[bool1]),m0) = if getLeaf(bool1) = "true" then (Boolean(true), m0) else (Boolean(false), m0)
+
+  | E ( itree(inode("EQUALITY",_), [equality1, itree(inode("==",_),[]), relational1]), m0) =
+    let
+        val (v1, m1) = E(equality1, m0);
+        val (v2, m2) = E(relational1, m1);
+        val v3 = if (v1 = v2) then Boolean(true) else Boolean(false);
+    in
+        (v3, m2)
+    end
+
+  | E ( itree(inode("EQUALITY",_), [equality1, itree(inode("!=",_),[]), relational1]), m0) =
+    let
+        val (v1, m1) = E(equality1, m0);
+        val (v2, m2) = E(relational1, m1);
+        val v3 = Boolean(v1 <> v2);
+    in
+        (v3, m2)
+    end
+
   | E ( itree(inode("RELATIONAL",_),[additive1]),m0) = E(additive1, m0)
+  | E ( itree(inode("RELATIONAL",_),[relational1, itree(inode("<",_),[]),additive1]),m0) =
+    let
+        val (v1, m1) = E(relational1, m0);
+        val (v2, m2) = E(additive1, m1);
+        val v3 = Boolean(DVtoInt(v1) < DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
+  | E ( itree(inode("RELATIONAL",_),[relational1, itree(inode("<=",_),[]),additive1]),m0) =
+    let
+        val (v1, m1) = E(relational1, m0);
+        val (v2, m2) = E(additive1, m1);
+        val v3 = Boolean(DVtoInt(v1) <= DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
+  | E ( itree(inode("RELATIONAL",_),[relational1, itree(inode(">",_),[]),additive1]),m0) =
+    let
+        val (v1, m1) = E(relational1, m0);
+        val (v2, m2) = E(additive1, m1);
+        val v3 = Boolean(DVtoInt(v1) > DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
+  | E ( itree(inode("RELATIONAL",_),[relational1, itree(inode(">=",_),[]),additive1]),m0) =
+    let
+        val (v1, m1) = E(relational1, m0);
+        val (v2, m2) = E(additive1, m1);
+        val v3 = Boolean(DVtoInt(v1) >= DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
   | E ( itree(inode("ADDITIVE",_),[multiplicative1]),m0) = E(multiplicative1, m0)
+  | E ( itree(inode("ADDITIVE",_),[additive1, itree(inode("+",_),[]), multiplicative1]),m0) =
+    let
+        val (v1, m1) = E(additive1, m0);
+        val (v2, m2) = E(multiplicative1, m1);
+        val v3 = Integer(DVtoInt(v1) + DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
+  | E ( itree(inode("ADDITIVE",_),[additive1, itree(inode("-",_),[]), multiplicative1]),m0) =
+    let
+        val (v1, m1) = E(additive1, m0);
+        val (v2, m2) = E(multiplicative1, m1);
+        val v3 = Integer(DVtoInt(v1) - DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
   | E ( itree(inode("MULTIPLICATIVE",_),[exponential1]),m0) = E(exponential1, m0)
+  | E ( itree(inode("MULTIPLICATIVE",_),[multiplicative1, itree(inode("*",_),[]), exponential1]),m0) =
+    let
+        val (v1, m1) = E(multiplicative1, m0);
+        val (v2, m2) = E(exponential1, m1);
+        val v3 = Integer(DVtoInt(v1) * DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
+  | E ( itree(inode("MULTIPLICATIVE",_),[multiplicative1, itree(inode("div",_),[]), exponential1]),m0) =
+    let
+        val (v1, m1) = E(multiplicative1, m0);
+        val (v2, m2) = E(exponential1, m1);
+        val v3 = Integer(DVtoInt(v1) div DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
+  | E ( itree(inode("MULTIPLICATIVE",_),[multiplicative1, itree(inode("mod",_),[]), exponential1]),m0) =
+    let
+        val (v1, m1) = E(multiplicative1, m0);
+        val (v2, m2) = E(exponential1, m1);
+        val v3 = Integer(DVtoInt(v1) mod DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
   | E ( itree(inode("EXPONENTIAL",_),[unary1]),m0) = E(unary1, m0)
+  | E ( itree(inode("EXPONENTIAL",_),[unary1, itree(inode("^",_),[]),exponential1]),m0) =
+    let
+        fun power(a,b) = if (b=0) then 1 else power(a,b-1)*a;
+        val (v1, m1) = E(exponential1, m0);
+        val (v2, m2) = E(unary1, m1);
+        val v3 = Integer(power(DVtoInt(v2), DVtoInt(v1)));
+    in
+        (v3, m2)
+    end
+  
   | E ( itree(inode("UNARY",_),[primary1]),m0) = E(primary1, m0)
   | E ( itree(inode("UNARY",_),[itree(inode("-",_),[]), primary1]),m0) = 
     let
@@ -122,6 +231,24 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
         (v1, m1)
     end
 
+  | E ( itree(inode("POSTFIX_EXPRESSION",_),[id1, itree(inode("++",_),[])]),m0) =
+    let
+        val loc = getLoc(accessEnv(getLeaf(id1), m0));
+        val v1 = Integer(DVtoInt(accessStore(loc, m0)) + 1);
+        val m1 = updateStore(loc, v1, m0);
+    in
+        (v1, m1)
+    end
+
+  | E ( itree(inode("POSTFIX_EXPRESSION",_),[id1, itree(inode("--",_),[])]),m0) =
+    let
+        val loc = getLoc(accessEnv(getLeaf(id1), m0));
+        val v1 = Integer(DVtoInt(accessStore(loc, m0)) - 1);
+        val m1 = updateStore(loc, v1, m0);
+    in
+        (v1, m1)
+    end
+
   | E ( itree(inode("PRIMARY",_),[itree(inode("|",_),[]), expr1, itree(inode("|",_),[])]),m0) = 
     let
         val (v1, m1) = E(expr1, m0);
@@ -129,6 +256,8 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
     in
         (v2, m1)
     end
+    
+  | E ( itree(inode("boolean",_),[bool1]),m0) = if getLeaf(bool1) = "true" then (Boolean(true), m0) else (Boolean(false), m0)
     
   | E ( itree(inode("integer",_),[int1]),m0) = 
     let
