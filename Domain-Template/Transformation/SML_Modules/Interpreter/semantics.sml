@@ -93,6 +93,24 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
         (v3, m2)
     end
     
+  | E ( itree(inode("MULTIPLICATIVE",_),[multiplicative1, itree(inode("div",_),[]), exponential1]),m0) =
+    let
+        val (v1, m1) = E(multiplicative1, m0);
+        val (v2, m2) = E(exponential1, m1);
+        val v3 = Integer(DVtoInt(v1) div DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
+  | E ( itree(inode("MULTIPLICATIVE",_),[multiplicative1, itree(inode("mod",_),[]), exponential1]),m0) =
+    let
+        val (v1, m1) = E(multiplicative1, m0);
+        val (v2, m2) = E(exponential1, m1);
+        val v3 = Integer(DVtoInt(v1) mod DVtoInt(v2));
+    in
+        (v3, m2)
+    end
+    
   | E ( itree(inode("EXPONENTIAL",_),[unary1]),m0) = E(unary1, m0)
   | E ( itree(inode("EXPONENTIAL",_),[unary1, itree(inode("^",_),[]),exponential1]),m0) =
     let
