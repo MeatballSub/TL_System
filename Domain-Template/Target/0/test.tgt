@@ -1,1 +1,3 @@
 int c = -5;
+int d = ++c;
+int e = --d;

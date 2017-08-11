@@ -96,6 +96,23 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
     
   | E ( itree(inode("PRIMARY",_),[primary1]),m0) = E(primary1, m0)
   | E ( itree(inode("PRIMARY",_),[itree(inode("(",_),[]), expr1, itree(inode(")",_),[])]),m0) = E(expr1, m0)
+  | E ( itree(inode("PREFIX_EXPRESSION",_),[itree(inode("++",_),[]), id1]),m0) =
+    let
+        val loc = getLoc(accessEnv(getLeaf(id1), m0));
+        val v1 = Integer(DVtoInt(accessStore(loc, m0)) + 1);
+        val m1 = updateStore(loc, v1, m0);
+    in
+        (v1, m1)
+    end
+
+  | E ( itree(inode("PREFIX_EXPRESSION",_),[itree(inode("--",_),[]), id1]),m0) =
+    let
+        val loc = getLoc(accessEnv(getLeaf(id1), m0));
+        val v1 = Integer(DVtoInt(accessStore(loc, m0)) - 1);
+        val m1 = updateStore(loc, v1, m0);
+    in
+        (v1, m1)
+    end
 
   | E ( itree(inode("PRIMARY",_),[itree(inode("|",_),[]), expr1, itree(inode("|",_),[])]),m0) = 
     let
