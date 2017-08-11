@@ -1,4 +1,7 @@
-bool a = (true and true);
-bool b = (true and false);
-bool c = (false and true);
-bool d = (false and false);
+int i = 0;
+
+while(i < 10)
+{
+    print(i);
+    ++i;
+}
