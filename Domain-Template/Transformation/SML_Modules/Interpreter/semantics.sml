@@ -158,12 +158,13 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
         m1
     end
     
-  | M ( itree(inode("STATEMENT_LIST",_), [ epsilon ]), m0) = m0
+  | M ( itree(inode("STATEMENT_LIST",_), [ itree(inode("epsilon",_), []) ]), m0) = m0
 
   | M ( itree(inode("STATEMENT_LIST",_), [ stmt1, stmtlist1 ]), m0) =
     let
         val m1 = M(stmt1, m0);
-        val m2 = M(stmtlist1, m1);
+        
+        val m2 = M(stmtlist1, m1) 
     in
         m2
     end
@@ -218,7 +219,7 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
     end
   | M ( itree(inode("ASSIGNMENT_STATEMENT",_), [ prePostFix ]), m0) =
     let
-        val m1 =  M(prePostFix, m0)
+        val (v1, m1) =  E(prePostFix, m0)
     in
         m1
     end
@@ -228,21 +229,29 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
     in
         m1 
     end
+
+  | M ( itree(inode("PRINT_STATEMENT",_), [prnt, itree(inode("(",_), []), expr, itree(inode(")",_), []) ]), m0) =
+    let
+        val (v1,m1) = E(expr, m0)
+        val p = print(DVtoString(v1));
+    in
+        m1
+    end
+
+ (* | M ( itree(inode("CONDITIONAL_STATEMENT",_), [itree(inode("if",_), []),itree(inode("(",_), []), expr, itree(inode(")",_), []), blk ]), m0) =
+    let
+        val (v1,m1) = E(expr, m0)
+    in
+        if DVtoBool(v1) then M(blk, m1) else m1
+    end 
+  | M ( itree(inode("CONDITIONAL_STATEMENT",_), [itree(inode("if",_), []),itree(inode("(",_), []), expr, itree(inode(")",_), []), blk, itree(inode("else",_), []), blk2 ]), m0) =
+    let
+        val (v1,m1) = E(expr, m0)
+    in
+        if DVtoBool(v1) then M(blk, m1) else M(blk2, m1)
+    end *)
     
-  | M ( itree(inode("PREFIX_EXPRESSION",_), [ expr1 ]), m0) =
-    let
-        val (v1,m1) =  E(expr1, m0)
-    in
-        m1
-    end
-  | M ( itree(inode("POSTFIX_EXPRESSION",_), [ expr1 ]), m0) =
-    let
-        val (v1,m1) =  E(expr1, m0)
-    in
-        m1
-    end
-
-
+    (* <FOR_LOOP>              ::= "for" "(" <FOR_INIT> ";" <EXPRESSION> ";" <ASSIGNMENT_STATEMENT> ")" <BLOCK>. *)
   | M ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
   | M _ = raise Fail("error in Semantics.M - this should never occur");
