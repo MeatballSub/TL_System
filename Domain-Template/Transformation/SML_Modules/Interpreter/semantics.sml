@@ -86,20 +86,34 @@ itree(inode("{",_),[])
 fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
   | E ( itree(inode("EXPRESSION",_), [expr ,itree(inode("or",_), []), disjunction]), m0) =
     let
-        val (v1, m1) = E(expr, m0)
-        val (v3, m3) = if DVtoBool(v1) then (v1,m1)
-                       else
+        val (v1, m1) = E(expr, m0);
+        val (v2, m2) = if DVtoBool(v1) then (v1,m1) else
                             let
-                                val (v2,m2) = E(disjunction, m0)
-                                if DVtoBool(v2) then (v2,m2) else (v1,m1)
+                                val (v3, m3) = E(disjunction, m1);
+                                val v4 = if DVtoBool(v3) then Boolean(true) else Boolean(false)
                             in
-                                (v4,m4)
-                            end
-                                    
+                                (v4, m3)
+                            end;
     in
-        (v3, m3)
+        (v2, m2)
     end
   | E ( itree(inode("DISJUNCTION",_), [equality1]), m0) = E(equality1, m0)
+  | E ( itree(inode("DISJUNCTION",_), [disj1, itree(inode("and",_),[]) ,equality1]), m0) =
+    let
+        val (v1, m1) = E(disj1, m0);
+        val (v2, m2) = if DVtoBool(v1) then
+                            let
+                                val (v3, m3) = E(equality1, m1);
+                                val v4 = if DVtoBool(v3) then Boolean(true) else Boolean(false)
+                            in
+                                (v4, m3)
+                            end
+                       else
+                            (Boolean(false), m1);
+    in
+        (v2, m2)
+    end
+    
   | E ( itree(inode("EQUALITY",_), [relational1]), m0) = E(relational1, m0)
 
   | E ( itree(inode("EQUALITY",_), [equality1, itree(inode("==",_),[]), relational1]), m0) =
@@ -300,7 +314,7 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
 
 
 
-fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) = 
+fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
     let
         val m1 = M(stmtlist1, m0);
         val p1 = showModel(m1);
@@ -308,7 +322,12 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
         m1
     end
     
-  | M ( itree(inode("STATEMENT_LIST",_), [ epsilon ]), m0) = m0
+  | M ( itree(inode("STATEMENT_LIST",_), [ epsilon ]), m0) =
+    let
+        val m1 = M(epsilon, m0);
+    in
+        m1
+    end
 
   | M ( itree(inode("STATEMENT_LIST",_), [ stmt1, stmtlist1 ]), m0) =
     let
@@ -318,7 +337,16 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
         m2
     end
     
+  | M ( itree(inode("EPSILON",_), _), m0) = m0
+
   | M ( itree(inode("STATEMENT",_), [stmt1, itree(inode(";",_), [])]), m0) =
+    let
+        val m1 = M(stmt1, m0);
+    in
+        m1
+    end
+    
+  | M ( itree(inode("STATEMENT",_), [stmt1]), m0) =
     let
         val m1 = M(stmt1, m0);
     in
@@ -358,6 +386,7 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
     in
         m3
     end
+
   | M ( itree(inode("ASSIGNMENT_STATEMENT",_), [ itree(inode("identifier",_), [id1]), itree(inode("=",_), []), expr1 ]), m0) =
     let
         val (v1, m1) = E(expr1, m0)
@@ -372,35 +401,39 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
     in
         m1
     end
-    
+
+  | M ( itree(inode("PRINT_STATEMENT",_), [prnt, itree(inode("(",_), []), expr, itree(inode(")",_), []) ]), m0) =
+    let
+        val (v1,m1) = E(expr, m0)
+        val p = print(DVtoString(v1) ^ "\n");
+    in
+        m1
+    end
+
   | M ( itree(inode("BLOCK",_), [ itree(inode("{",_), []), statementList, itree(inode("}",_), []) ]), m0) =
     let
         val m1 =  M(statementList, m0)
     in
         m1 
     end
-
-  | M ( itree(inode("PRINT_STATEMENT",_), [prnt, itree(inode("(",_), []), expr, itree(inode(")",_), []) ]), m0) =
-    let
-        val (v1,m1) = E(expr, m0)
-        val p = print(DVtoString(v1));
-    in
-        m1
-    end
-
- (* | M ( itree(inode("CONDITIONAL_STATEMENT",_), [itree(inode("if",_), []),itree(inode("(",_), []), expr, itree(inode(")",_), []), blk ]), m0) =
+    
+  | M ( itree(inode("CONDITIONAL_STATEMENT",_), [itree(inode("if",_), []),itree(inode("(",_), []), expr, itree(inode(")",_), []), blk ]), m0) =
     let
         val (v1,m1) = E(expr, m0)
     in
         if DVtoBool(v1) then M(blk, m1) else m1
     end 
+    
   | M ( itree(inode("CONDITIONAL_STATEMENT",_), [itree(inode("if",_), []),itree(inode("(",_), []), expr, itree(inode(")",_), []), blk, itree(inode("else",_), []), blk2 ]), m0) =
     let
         val (v1,m1) = E(expr, m0)
     in
         if DVtoBool(v1) then M(blk, m1) else M(blk2, m1)
-    end *)
-
+    end
+    
+  | M ( itree(inode("WHILE_LOOP",_), _), m0) = m0
+  | M ( itree(inode("FOR_LOOP",_), _), m0) = m0
+    
   | M ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
   | M _ = raise Fail("error in Semantics.M - this should never occur");

@@ -1,2 +1,6 @@
 int x = 5;
 print(5);
+bool a = (true or true);
+bool b = (true or false);
+bool c = (false or true);
+bool d = (false or false);
