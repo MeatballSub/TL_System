@@ -1,1 +1,3 @@
-if (false) {} else {}
+int x = 4;
+
+

@@ -5,10 +5,10 @@ struct1 [label="WFC_START"]
 struct2 [label="STATEMENT_LIST"]
 struct3 [label="STATEMENT"]
 struct4 [label="DECLARATION_STATEMENT"]
-struct5 [label="bool"]
+struct5 [label="int"]
 struct4->struct5
 struct6 [label="identifier"]
-struct7 [label="a"]
+struct7 [label="x"]
 struct6->struct7
 struct4->struct6
 struct8 [label="="]
@@ -22,8 +22,8 @@ struct14 [label="MULTIPLICATIVE"]
 struct15 [label="EXPONENTIAL"]
 struct16 [label="UNARY"]
 struct17 [label="PRIMARY"]
-struct18 [label="boolean"]
-struct19 [label="true"]
+struct18 [label="integer"]
+struct19 [label="3"]
 struct18->struct19
 struct17->struct18
 struct16->struct17
@@ -41,205 +41,57 @@ struct3->struct20
 struct2->struct3
 struct21 [label="STATEMENT_LIST"]
 struct22 [label="STATEMENT"]
-struct23 [label="DECLARATION_STATEMENT"]
-struct24 [label="bool"]
+struct23 [label="BLOCK"]
+struct24 [label="{"]
 struct23->struct24
-struct25 [label="identifier"]
-struct26 [label="b"]
-struct25->struct26
-struct23->struct25
-struct27 [label="="]
-struct23->struct27
-struct28 [label="EXPRESSION"]
-struct29 [label="DISJUNCTION"]
-struct30 [label="EQUALITY"]
-struct31 [label="RELATIONAL"]
-struct32 [label="ADDITIVE"]
-struct33 [label="MULTIPLICATIVE"]
-struct34 [label="EXPONENTIAL"]
-struct35 [label="UNARY"]
-struct36 [label="not"]
-struct35->struct36
-struct37 [label="PRIMARY"]
-struct38 [label="identifier"]
-struct39 [label="a"]
+struct25 [label="STATEMENT_LIST"]
+struct26 [label="STATEMENT"]
+struct27 [label="ASSIGNMENT_STATEMENT"]
+struct28 [label="identifier"]
+struct29 [label="x"]
+struct28->struct29
+struct27->struct28
+struct30 [label="="]
+struct27->struct30
+struct31 [label="EXPRESSION"]
+struct32 [label="DISJUNCTION"]
+struct33 [label="EQUALITY"]
+struct34 [label="RELATIONAL"]
+struct35 [label="ADDITIVE"]
+struct36 [label="MULTIPLICATIVE"]
+struct37 [label="EXPONENTIAL"]
+struct38 [label="UNARY"]
+struct39 [label="PRIMARY"]
+struct40 [label="integer"]
+struct41 [label="54"]
+struct40->struct41
+struct39->struct40
 struct38->struct39
 struct37->struct38
-struct35->struct37
+struct36->struct37
+struct35->struct36
 struct34->struct35
 struct33->struct34
 struct32->struct33
 struct31->struct32
-struct30->struct31
-struct29->struct30
-struct28->struct29
-struct23->struct28
-struct22->struct23
-struct40 [label=";"]
-struct22->struct40
-struct21->struct22
-struct41 [label="STATEMENT_LIST"]
-struct42 [label="STATEMENT"]
-struct43 [label="DECLARATION_STATEMENT"]
-struct44 [label="bool"]
+struct27->struct31
+struct26->struct27
+struct42 [label=";"]
+struct26->struct42
+struct25->struct26
+struct43 [label="STATEMENT_LIST"]
+struct44 [label="EPSILON"]
 struct43->struct44
-struct45 [label="identifier"]
-struct46 [label="c"]
-struct45->struct46
-struct43->struct45
-struct47 [label="="]
-struct43->struct47
-struct48 [label="EXPRESSION"]
-struct49 [label="DISJUNCTION"]
-struct50 [label="EQUALITY"]
-struct51 [label="RELATIONAL"]
-struct52 [label="ADDITIVE"]
-struct53 [label="MULTIPLICATIVE"]
-struct54 [label="EXPONENTIAL"]
-struct55 [label="UNARY"]
-struct56 [label="PRIMARY"]
-struct57 [label="boolean"]
-struct58 [label="false"]
-struct57->struct58
-struct56->struct57
-struct55->struct56
-struct54->struct55
-struct53->struct54
-struct52->struct53
-struct51->struct52
-struct50->struct51
-struct49->struct50
-struct48->struct49
-struct43->struct48
-struct42->struct43
-struct59 [label=";"]
-struct42->struct59
-struct41->struct42
-struct60 [label="STATEMENT_LIST"]
-struct61 [label="STATEMENT"]
-struct62 [label="DECLARATION_STATEMENT"]
-struct63 [label="bool"]
-struct62->struct63
-struct64 [label="identifier"]
-struct65 [label="d"]
-struct64->struct65
-struct62->struct64
-struct66 [label="="]
-struct62->struct66
-struct67 [label="EXPRESSION"]
-struct68 [label="DISJUNCTION"]
-struct69 [label="EQUALITY"]
-struct70 [label="RELATIONAL"]
-struct71 [label="ADDITIVE"]
-struct72 [label="MULTIPLICATIVE"]
-struct73 [label="EXPONENTIAL"]
-struct74 [label="UNARY"]
-struct75 [label="not"]
-struct74->struct75
-struct76 [label="PRIMARY"]
-struct77 [label="identifier"]
-struct78 [label="c"]
-struct77->struct78
-struct76->struct77
-struct74->struct76
-struct73->struct74
-struct72->struct73
-struct71->struct72
-struct70->struct71
-struct69->struct70
-struct68->struct69
-struct67->struct68
-struct62->struct67
-struct61->struct62
-struct79 [label=";"]
-struct61->struct79
-struct60->struct61
-struct80 [label="STATEMENT_LIST"]
-struct81 [label="STATEMENT"]
-struct82 [label="DECLARATION_STATEMENT"]
-struct83 [label="bool"]
-struct82->struct83
-struct84 [label="identifier"]
-struct85 [label="e"]
-struct84->struct85
-struct82->struct84
-struct86 [label="="]
-struct82->struct86
-struct87 [label="EXPRESSION"]
-struct88 [label="DISJUNCTION"]
-struct89 [label="EQUALITY"]
-struct90 [label="RELATIONAL"]
-struct91 [label="ADDITIVE"]
-struct92 [label="MULTIPLICATIVE"]
-struct93 [label="EXPONENTIAL"]
-struct94 [label="UNARY"]
-struct95 [label="not"]
-struct94->struct95
-struct96 [label="PRIMARY"]
-struct97 [label="boolean"]
-struct98 [label="true"]
-struct97->struct98
-struct96->struct97
-struct94->struct96
-struct93->struct94
-struct92->struct93
-struct91->struct92
-struct90->struct91
-struct89->struct90
-struct88->struct89
-struct87->struct88
-struct82->struct87
-struct81->struct82
-struct99 [label=";"]
-struct81->struct99
-struct80->struct81
-struct100 [label="STATEMENT_LIST"]
-struct101 [label="STATEMENT"]
-struct102 [label="DECLARATION_STATEMENT"]
-struct103 [label="bool"]
-struct102->struct103
-struct104 [label="identifier"]
-struct105 [label="f"]
-struct104->struct105
-struct102->struct104
-struct106 [label="="]
-struct102->struct106
-struct107 [label="EXPRESSION"]
-struct108 [label="DISJUNCTION"]
-struct109 [label="EQUALITY"]
-struct110 [label="RELATIONAL"]
-struct111 [label="ADDITIVE"]
-struct112 [label="MULTIPLICATIVE"]
-struct113 [label="EXPONENTIAL"]
-struct114 [label="UNARY"]
-struct115 [label="not"]
-struct114->struct115
-struct116 [label="PRIMARY"]
-struct117 [label="boolean"]
-struct118 [label="false"]
-struct117->struct118
-struct116->struct117
-struct114->struct116
-struct113->struct114
-struct112->struct113
-struct111->struct112
-struct110->struct111
-struct109->struct110
-struct108->struct109
-struct107->struct108
-struct102->struct107
-struct101->struct102
-struct119 [label=";"]
-struct101->struct119
-struct100->struct101
-struct120 [label="STATEMENT_LIST"]
-struct121 [label="EPSILON"]
-struct120->struct121
-struct100->struct120
-struct80->struct100
-struct60->struct80
-struct41->struct60
-struct21->struct41
+struct25->struct43
+struct23->struct25
+struct45 [label="}"]
+struct23->struct45
+struct22->struct23
+struct21->struct22
+struct46 [label="STATEMENT_LIST"]
+struct47 [label="EPSILON"]
+struct46->struct47
+struct21->struct46
 struct2->struct21
 struct1->struct2
 }
