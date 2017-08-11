@@ -80,7 +80,25 @@ itree(inode("{",_),[])
 fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
   | E ( itree(inode("DISJUNCTION",_), [equality1]), m0) = E(equality1, m0)
   | E ( itree(inode("EQUALITY",_), [relational1]), m0) = E(relational1, m0)
-  | E ( itree(inode("boolean",_),[bool1]),m0) = if getLeaf(bool1) = "true" then (Boolean(true), m0) else (Boolean(false), m0)
+
+  | E ( itree(inode("EQUALITY",_), [equality1, itree(inode("==",_),[]), relational1]), m0) =
+    let
+        val (v1, m1) = E(equality1, m0);
+        val (v2, m2) = E(relational1, m1);
+        val v3 = if (v1 = v2) then Boolean(true) else Boolean(false);
+    in
+        (v3, m2)
+    end
+
+  | E ( itree(inode("EQUALITY",_), [equality1, itree(inode("!=",_),[]), relational1]), m0) =
+    let
+        val (v1, m1) = E(equality1, m0);
+        val (v2, m2) = E(relational1, m1);
+        val v3 = Boolean(v1 <> v2);
+    in
+        (v3, m2)
+    end
+
   | E ( itree(inode("RELATIONAL",_),[additive1]),m0) = E(additive1, m0)
   | E ( itree(inode("RELATIONAL",_),[relational1, itree(inode("<",_),[]),additive1]),m0) =
     let
@@ -238,6 +256,8 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
     in
         (v2, m1)
     end
+    
+  | E ( itree(inode("boolean",_),[bool1]),m0) = if getLeaf(bool1) = "true" then (Boolean(true), m0) else (Boolean(false), m0)
     
   | E ( itree(inode("integer",_),[int1]),m0) = 
     let

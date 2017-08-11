@@ -1,23 +1,11 @@
-int a = 4-3;
-int b = 4+3;
-int c = 1;
-int d = 7;
+int a = 1;
+int b = 7;
+int c = 4;
+int d = 1;
 
-bool e = a < b;
-bool f = b < a;
-
-bool g = a > b;
-bool h = b > a;
-
-bool i = a <= b;
-bool j = a <= c;
-bool k = b <= a;
-bool l = c <= a;
-
-bool m = a >= b;
-bool n = a >= c;
-bool o = b >= a;
-bool p = c >= a;
-
-
-
+bool e = (a == b);
+bool f = (a == 1);
+bool g = (1 == a);
+bool h = (d == a);
+bool i = (a == d);
+bool j = (b == a);
