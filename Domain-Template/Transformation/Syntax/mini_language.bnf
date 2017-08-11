@@ -55,8 +55,7 @@ WFC_START
 
 <EQUALITY>              ::= <EQUALITY> "==" <RELATIONAL>
                           | <EQUALITY> "!=" <RELATIONAL>
-                          | <RELATIONAL>
-                          | boolean.
+                          | <RELATIONAL>.
 
 <RELATIONAL>            ::= <RELATIONAL> "<" <ADDITIVE>
                           | <RELATIONAL> "<=" <ADDITIVE>
@@ -82,6 +81,7 @@ WFC_START
 
 <PRIMARY>               ::= identifier
                           | integer
+                          | boolean
                           | "(" <EXPRESSION> ")"
                           | "|" <EXPRESSION> "|"
                           | <PREFIX_EXPRESSION>
