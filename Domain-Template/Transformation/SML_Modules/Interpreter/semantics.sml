@@ -79,6 +79,22 @@ itree(inode("{",_),[])
 
 fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
   | E ( itree(inode("DISJUNCTION",_), [equality1]), m0) = E(equality1, m0)
+  | E ( itree(inode("DISJUNCTION",_), [disj1, itree(inode("and",_),[]) ,equality1]), m0) =
+    let
+        val (v1, m1) = E(disj1, m0);
+        val (v2, m2) = if DVtoBool(v1) then
+                            let
+                                val (v3, m3) = E(equality1, m1);
+                                val v4 = if DVtoBool(v3) then Boolean(true) else Boolean(false)
+                            in
+                                (v4, m3)
+                            end
+                       else
+                            (Boolean(false), m1);
+    in
+        (v2, m2)
+    end
+    
   | E ( itree(inode("EQUALITY",_), [relational1]), m0) = E(relational1, m0)
 
   | E ( itree(inode("EQUALITY",_), [equality1, itree(inode("==",_),[]), relational1]), m0) =
