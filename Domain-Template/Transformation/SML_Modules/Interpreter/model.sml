@@ -43,13 +43,14 @@ fun typeToString BOOL = "bool"
   | typeToString INT = "integer"
   | typeToString ERROR = "error";
 
-
-fun DVtoString(value:bool) = if value then "true" else "false"
-  | DVtoString(value:int)  = Int.toString value
-  | DVtoString(value:loc)  = Int.toString value;
+fun DVtoString(Boolean value) = Bool.toString value
+  | DVtoString(Integer value) = Int.toString value;
 
 fun envEntryToString (id, t, loc) = "(" ^ id ^ "," ^ typeToString t ^ "," ^ Int.toString loc ^ ")";
-fun storeEntryToString(loc, value) = "(" ^ Int.toString loc ^ "," ^ DVtoString value ^ ")";
+fun storeEntryToString(loc, value) = "(" ^ Int.toString loc ^ "," ^ DVtoString(value) ^ ")";
+(*
+fun storeEntryToString(loc, value) = "(" ^ Int.toString loc ^ ")";
+*)
 
 fun showStore [] = print "\n\n"
   | showStore(s1::s) = (print("\n" ^ storeEntryToString s1); showStore s);
@@ -61,9 +62,10 @@ fun showLoc(l:loc) = print("Location = " ^ Int.toString l ^ "\n\n");
 
 fun showModel(e:env, l:loc, s:store) =
     let
-        val e1 = showEnv(e);
+        val e1 = showEnv(e)
         val l1 = showLoc(l);
         val s1 = showStore(s);
+
     in
         (e, l, s)
     end
