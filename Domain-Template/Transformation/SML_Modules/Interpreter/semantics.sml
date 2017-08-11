@@ -312,8 +312,6 @@ fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
   | E ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn E root = " ^ x_root ^ "\n\n")
   | E _ = raise Fail("error in Semantics.E - this should never occur");
 
-
-
 fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
     let
         val m1 = M(stmtlist1, m0);
@@ -431,13 +429,54 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
         if DVtoBool(v1) then M(blk, m1) else M(blk2, m1)
     end
     
-  | M ( itree(inode("WHILE_LOOP",_), _), m0) = m0
-  | M ( itree(inode("FOR_LOOP",_), _), m0) = m0
+  | M ( itree(inode("WHILE_LOOP",_), [itree(inode("while",_), []), itree(inode("(",_), []), expr1, itree(inode(")",_), []), block1]), m0) =
+    let
+        fun N ( expr1, stmt1, m0) =
+            let
+                val (v, m1) = E(expr1, m0);
+            in
+                if DVtoBool(v) then N(expr1, stmt1, M(stmt1, m1))
+                else m1
+            end;
+        val m2 = N(expr1, block1, m0);
+    in
+        m2
+    end
+    
+ | M ( itree(inode("FOR_LOOP",_), [itree(inode("for",_), []), itree(inode("(",_), []), forInit, itree(inode(";",_), []), expr1, itree(inode(";",_), []), stmt1, itree(inode(")",_), []), block1  ]), m0) =
+    let
+        fun N ( stmt2, expr2, blk2, n0) =
+            let
+                val (v, n1) = E(expr1, n0);
+                val n4 = if DVtoBool(v) then 
+                    let
+                        val n2 = M(blk2, n1);
+                        val n3 = M(stmt2, n2);
+                    in
+                        N(stmt2, expr2, blk2, n3) 
+                    end
+                else n1
+            in
+                n4
+            end
+            
+        val m1 = M(forInit, m0);
+        val m2 = N(stmt1, expr1, block1, m1)
+    in
+        m2
+    end
+    
+  | M ( itree(inode("FOR_INIT",_), [ asgnDec ]), m0) =
+    let
+        val m1 =  M(asgnDec, m0)
+    in
+        m1
+    end
     
   | M ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
   | M _ = raise Fail("error in Semantics.M - this should never occur");
-  
+
 (* =========================================================================================================== *)
 end (* struct *)
 (* =========================================================================================================== *)
