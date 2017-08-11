@@ -23,7 +23,7 @@ struct15 [label="EXPONENTIAL"]
 struct16 [label="UNARY"]
 struct17 [label="PRIMARY"]
 struct18 [label="integer"]
-struct19 [label="3"]
+struct19 [label="5"]
 struct18->struct19
 struct17->struct18
 struct16->struct17
@@ -40,58 +40,8 @@ struct20 [label=";"]
 struct3->struct20
 struct2->struct3
 struct21 [label="STATEMENT_LIST"]
-struct22 [label="STATEMENT"]
-struct23 [label="BLOCK"]
-struct24 [label="{"]
-struct23->struct24
-struct25 [label="STATEMENT_LIST"]
-struct26 [label="STATEMENT"]
-struct27 [label="ASSIGNMENT_STATEMENT"]
-struct28 [label="identifier"]
-struct29 [label="x"]
-struct28->struct29
-struct27->struct28
-struct30 [label="="]
-struct27->struct30
-struct31 [label="EXPRESSION"]
-struct32 [label="DISJUNCTION"]
-struct33 [label="EQUALITY"]
-struct34 [label="RELATIONAL"]
-struct35 [label="ADDITIVE"]
-struct36 [label="MULTIPLICATIVE"]
-struct37 [label="EXPONENTIAL"]
-struct38 [label="UNARY"]
-struct39 [label="PRIMARY"]
-struct40 [label="integer"]
-struct41 [label="54"]
-struct40->struct41
-struct39->struct40
-struct38->struct39
-struct37->struct38
-struct36->struct37
-struct35->struct36
-struct34->struct35
-struct33->struct34
-struct32->struct33
-struct31->struct32
-struct27->struct31
-struct26->struct27
-struct42 [label=";"]
-struct26->struct42
-struct25->struct26
-struct43 [label="STATEMENT_LIST"]
-struct44 [label="EPSILON"]
-struct43->struct44
-struct25->struct43
-struct23->struct25
-struct45 [label="}"]
-struct23->struct45
-struct22->struct23
+struct22 [label="EPSILON"]
 struct21->struct22
-struct46 [label="STATEMENT_LIST"]
-struct47 [label="EPSILON"]
-struct46->struct47
-struct21->struct46
 struct2->struct21
 struct1->struct2
 }
