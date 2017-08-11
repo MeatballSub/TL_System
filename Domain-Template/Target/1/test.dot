@@ -1,0 +1,37 @@
+
+digraph "test"
+{
+struct1 [label="WFC_START"]
+struct2 [label="STATEMENT_LIST"]
+struct3 [label="STATEMENT"]
+struct4 [label="DECLARATION_STATEMENT"]
+struct5 [label="int"]
+struct4->struct5
+struct6 [label="identifier"]
+struct7 [label="x"]
+struct6->struct7
+struct4->struct6
+struct3->struct4
+struct8 [label=";"]
+struct3->struct8
+struct2->struct3
+struct9 [label="STATEMENT_LIST"]
+struct10 [label="STATEMENT"]
+struct11 [label="DECLARATION_STATEMENT"]
+struct12 [label="bool"]
+struct11->struct12
+struct13 [label="identifier"]
+struct14 [label="x"]
+struct13->struct14
+struct11->struct13
+struct10->struct11
+struct15 [label=";"]
+struct10->struct15
+struct9->struct10
+struct16 [label="STATEMENT_LIST"]
+struct17 [label="EPSILON"]
+struct16->struct17
+struct9->struct16
+struct2->struct9
+struct1->struct2
+}

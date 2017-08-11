@@ -1,1 +1,4 @@
-bool x = true;
+int x;
+bool y;
+int z = 3;
+

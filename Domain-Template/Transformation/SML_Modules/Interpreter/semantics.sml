@@ -76,13 +76,183 @@ fun M( [[stmt1 ; stmtList1 ]], m0) =
 fun M( itree(inode("WFC_START",_), [ block1 ]), m0) = m0
 itree(inode("{",_),[])
 *)
+fun E ( itree(inode("EXPRESSION",_), [ disjunction ]), m0) =
+    let
+        val (v, m1) = E(disjunction, m0);
+    in
+        (v, m1)
+    end
+    
+   | E ( itree(inode("EXPRESSION",_), [expr, itree(inode("or",_), []), disjunction]), m0) =
+    let
+        val v0 = false
+        val (v1, m1) = E(expr, m0)
+        val (v2, m2) = E(disjunction, m1)       
+    in
+        if v1 then (v1, m1) else if v2 then (v2, m2) else (v0, m0)
+    end
+    
+   | E ( itree(inode("DISJUNCTION",_), [ equality ]), m0) =
+    let
+        val (v, m1) = E(equality, m0);
+    in
+        (v, m1)
+    end
+    
+   | E ( itree(inode("DISJUNCTION",_), [disjunction, itree(inode("and", _),[]), equality]), m0) =
+    let
+        val v0 = false
+        val (v1, m1) = E(disjunction, m0)
+        val (v2, m2) = E(equality, m1)       
+    in
+        if v1 then if v2 then (true, m2) else (v0, m0) else (v0, m0)
+    end
+    
+   | E ( itree(inode("EQUALITY",_), [ relational ]), m0) =
+    let
+        val (v, m1) = E(relational, m0);
+    in
+        (v, m1)
+    end
+    
+   | E ( itree(inode("EQUALITY",_), [equality, itree(inode("==", _),[]), relational]), m0) =
+    let
+        val v0 = false
+        val (v1, m1) = E(equality, m0)
+        val (v2, m2) = E(relational, m1)       
+    in
+        if v1 = v2 then (true, m2) else (v0, m0)
+    end
+    
+   | E ( itree(inode("EQUALITY",_), [equality, itree(inode("!=", _),[]), relational]), m0) =
+    let
+        val v0 = false
+        val (v1, m1) = E(equality, m0)
+        val (v2, m2) = E(relational, m1)       
+    in
+        if v1 = v2 then (v0, m0) else (true, m2)
+    end
+   | E ( itree(inode("boolean",_),[bool1]),m0) = if getLeaf(bool1) = true 
+                                                 then ((Boolean)true, m0) 
+                                                 else ((Boolean)false, m0) 
+                                                 
+   | E ( itree(inode("RELATIONAL",_), [ additive ]), m0) =
+    let
+        val (v, m1) = E(additive, m0);
+    in
+        (v, m1)
+    end  
+    
+   | E ( itree(inode("RELATIONAL",_), [relational, itree(inode("<", _),[]), additive]), m0) =
+    let
+        val (v1, m1) = E(relational, m0)
+        val (v2, m2) = E(additive, m1)       
+    in
+        if v1 < v2 then (true, m2) else (false, m0)
+    end
+    
+   | E ( itree(inode("RELATIONAL",_), [relational, itree(inode(">", _),[]), additive]), m0) =
+    let
+        val (v1, m1) = E(relational, m0)
+        val (v2, m2) = E(additive, m1)       
+    in
+        if v1 > v2 then (true, m2) else (false, m0)
+    end
+    
+   | E ( itree(inode("RELATIONAL",_), [relational, itree(inode("<=", _),[]), additive]), m0) =
+    let
+        val (v1, m1) = E(relational, m0)
+        val (v2, m2) = E(additive, m1)       
+    in
+        if v1 <= v2 then (true, m2) else (false, m0)
+    end
+    
+   | E ( itree(inode("RELATIONAL",_), [relational, itree(inode(">=", _),[]), additive]), m0) =
+    let
+        val (v1, m1) = E(relational, m0)
+        val (v2, m2) = E(additive, m1)       
+    in
+        if v1 >= v2 then (true, m2) else (false, m0)
+    end
+    
+   | E ( itree(inode("ADDITIVE",_), [ multiplicative ]), m0) =
+    let
+        val (v, m1) = E(multiplicative, m0);
+    in
+        (v, m1)
+    end  
+    
+   | E ( itree(inode("ADDITIVE",_), [additive, itree(inode("+", _),[]), multiplicative]), m0) =
+    let
+        val (v1, m1) = E(additive, m0)
+        val (v2, m2) = E(multiplicative, m1)       
+    in
+        (v1 + v2, m2)
+    end
+    
+   | E ( itree(inode("ADDITIVE",_), [additive, itree(inode("-", _),[]), multiplicative]), m0) =
+    let
+        val (v1, m1) = E(additive, m0)
+        val (v2, m2) = E(multiplicative, m1)       
+    in
+        (v1 - v2, m2)
+    end
 
-fun E ( itree(inode("EXPRESSION",_), [disj1]), m0) = E(disj1, m0)
-  | E ( itree(inode("DISJUNCTION",_), [equality1]), m0) = E(equality1, m0)
-  | E ( itree(inode("EQUALITY",_), [relational1]), m0) = E(relational1, m0)
-  | E ( itree(inode("boolean",_),[bool1]),m0) = if getLeaf(bool1) = "true" then (Boolean(true), m0) else (Boolean(false), m0)
-  | E ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn E root = " ^ x_root ^ "\n\n")
-  | E _ = raise Fail("error in Semantics.E - this should never occur");
+   | E ( itree(inode("MULTIPLICATIVE",_), [ exponential ]), m0) =
+    let
+        val (v, m1) = E(exponential, m0);
+    in
+        (v, m1)
+    end  
+    
+   | E ( itree(inode("MULTIPLICATIVE",_), [multiplicative, itree(inode("*", _),[]), exponential]), m0) =
+    let
+        val (v1, m1) = E(multiplicative, m0)
+        val (v2, m2) = E(exponential, m1)       
+    in
+        (v1 * v2, m2)
+    end
+    
+   | E ( itree(inode("MULTIPLICATIVE",_), [multiplicative, itree(inode("div", _),[]), exponential]), m0) =
+    let
+        val (v1, m1) = E(multiplicative, m0)
+        val (v2, m2) = E(exponential, m1)       
+    in
+        (v1 / v2, m2)
+    end
+   | E ( itree(inode("MULTIPLICATIVE",_), [multiplicative, itree(inode("mod", _),[]), exponential]), m0) =
+    let
+        val (v1, m1) = E(multiplicative, m0)
+        val (v2, m2) = E(exponential, m1)       
+    in
+        (v1 - v2, m2)
+    end
+(*
+
+<MULTIPLICATIVE>        ::= <MULTIPLICATIVE> "*" <EXPONENTIAL>
+                          | <MULTIPLICATIVE> "div" <EXPONENTIAL>
+                          | <MULTIPLICATIVE> "mod" <EXPONENTIAL>
+                          | <EXPONENTIAL>.
+
+<EXPONENTIAL>           ::= <UNARY> "^" <EXPONENTIAL>
+                          | <UNARY>.
+
+<UNARY>                 ::= "-" <PRIMARY>
+                          | "not" <PRIMARY>
+                          | <PRIMARY>.
+
+<PRIMARY>               ::= identifier
+                          | integer
+                          | "(" <EXPRESSION> ")"
+                          | "|" <EXPRESSION> "|"
+                          | <PREFIX_EXPRESSION>
+                          | <POSTFIX_EXPRESSION>.  *)
+                          
+  | E ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
+  
+  | E _ = raise Fail("error in Semantics.M - this should never occur"); 
+
+
 
 
 
@@ -117,24 +287,41 @@ fun M ( itree(inode("WFC_START",_), [ stmtlist1 ]), m0) =
     in
         m1
     end
-    
-  | M ( itree(inode("DECLARATION_STATEMENT",_), [ itree(inode("bool",_), []), id1 ]), m0) =
+ 
+   | M ( itree(inode("DECLARATION_STATEMENT",_), [ itree(inode("bool",_), []), id1 ]), m0) =
     let
         val m1 = updateEnvironment(getLeaf(id1), BOOL, new(m0), m0);
+        val p = showModel(m1);
     in
         m1
     end
-
-  | M ( itree(inode("DECLARATION_STATEMENT",_), [ itree(inode("bool",_), []), id1, itree(inode("=",_), []), expr1 ]), m0) =
+    
+   | M ( itree(inode("DECLARATION_STATEMENT",_), [ itree(inode("int",_), []), id1, itree(inode("=", _), []), expr ]), m0) =
     let
-        val m1 = updateEnvironment(getLeaf(id1), BOOL, new(m0), m0);
-        val (v, m2) = E(expr1, m1);
-        val loc = getLoc(accessEnv(getLeaf(id1), m2));
-        val m3 = updateStore(loc, v, m2);
+        val m1 = updateEnvironment(getLeaf(id1), INT, new(m0), m0);
+        val (v,m2) = E(expr, m1)
+        val a_location = getLoc(accessEnv(getLeaf(id1), m2))
+        val m3 = updateStore(a_location, v, m2)
         val p = showModel(m3);
     in
         m3
     end
+
+   | M ( itree(inode("DECLARATION_STATEMENT",_), [ itree(inode("bool",_), []), id1, itree(inode("=", _), []), expr ]), m0) =
+    let
+        val m1 = updateEnvironment(getLeaf(id1), BOOL, new(m0), m0);
+        val (v,m2) = E(expr, m1)
+        val a_location = getLoc(accessEnv(getLeaf(id1), m2))
+        val m3 = updateStore(a_location, v, m2)
+        val p = showModel(m3);
+    in
+        m3
+    end
+    
+    
+ (*   <DECLARATION_STATEMENT> ::= int identifier
+                          | bool ... *)
+
 
   | M ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
