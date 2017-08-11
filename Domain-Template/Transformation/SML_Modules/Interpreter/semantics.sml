@@ -76,6 +76,9 @@ fun M( [[stmt1 ; stmtList1 ]], m0) =
 fun M( itree(inode("WFC_START",_), [ block1 ]), m0) = m0
 itree(inode("{",_),[])
 *)
+
+
+
 fun E ( itree(inode("EXPRESSION",_), [ disjunction ]), m0) =
     let
         val (v, m1) = E(disjunction, m0);
@@ -132,7 +135,7 @@ fun E ( itree(inode("EXPRESSION",_), [ disjunction ]), m0) =
     in
         if v1 = v2 then (v0, m0) else (true, m2)
     end
-   | E ( itree(inode("boolean",_),[bool1]),m0) = if getLeaf(bool1) = true 
+   | E ( itree(inode("boolean",_),[bool1]),m0) = if getLeaf(bool1) = "true" 
                                                  then ((Boolean)true, m0) 
                                                  else ((Boolean)false, m0) 
                                                  
@@ -225,28 +228,81 @@ fun E ( itree(inode("EXPRESSION",_), [ disjunction ]), m0) =
         val (v1, m1) = E(multiplicative, m0)
         val (v2, m2) = E(exponential, m1)       
     in
-        (v1 - v2, m2)
+        (v1 mod v2, m2)
     end
-(*
+    
+   | E ( itree(inode("EXPONENTIAL",_), [ unary ]), m0) =
+    let
+        val (v, m1) = E(unary, m0);
+    in
+        (v, m1)
+    end  
+    
+   | E ( itree(inode("EXPONENTIAL",_), [unary, itree(inode("*", _),[]), exponential]), m0) =
+    let
+        val (v1, m1) = E(unary, m0)
+        val (v2, m2) = E(exponential, m1)       
+    in
+        (expt(v1,v2), m2)
+    end
 
-<MULTIPLICATIVE>        ::= <MULTIPLICATIVE> "*" <EXPONENTIAL>
-                          | <MULTIPLICATIVE> "div" <EXPONENTIAL>
-                          | <MULTIPLICATIVE> "mod" <EXPONENTIAL>
-                          | <EXPONENTIAL>.
+   | E ( itree(inode("UNARY",_), [ primary ]), m0) =
+    let
+        val (v, m1) = E(primary, m0);
+    in
+        (v, m1)
+    end
+    
+   | E ( itree(inode("UNARY",_), [itree(inode("-", _),[]), primary]), m0) =
+    let
+        val (v1, m1) = E(primary, m0)       
+    in
+        (~(v1), m1)
+    end
+    
+   | E ( itree(inode("UNARY",_), [itree(inode("not", _),[]), primary]), m0) =
+    let
+        val (v1, m1) = E(primary, m0)      
+    in
+        (not v1, m1)
+    end
+    
+    
+   | E ( itree(inode("PRIMARY",_), [itree(inode("identifier", _),[]), identifier]), m0) =
+    let
+        val loc = getLoc(accessEnv(getLeaf(identifier),m0));
+        val v = accessStore(loc, m0)
+    in
+        (v, m0)
+    end  
+   | E ( itree(inode("PRIMARY",_), [itree(inode("integer", _),[]), integer]), m0) = (integer, m0)
+    
+   | E ( itree(inode("PRIMARY",_), [itree(inode("identifier", _),[itree(inode("(", _),[]), expression, itree(inode(")", _),[])]), identifier]), m0) =
+    let
+        val (v, m1) = E(expression, m0);
+    in
+        (v, m1)
+    end
+   | E ( itree(inode("PRIMARY",_), [itree(inode("identifier", _),[itree(inode("|", _),[]), expression, itree(inode("|", _),[])]), identifier]), m0) =
+    let
+        val (v, m1) = E(expression, m0);
+    in
+        (abs v, m1)
+    end    
 
-<EXPONENTIAL>           ::= <UNARY> "^" <EXPONENTIAL>
-                          | <UNARY>.
+   | E ( itree(inode("PRIMARY",_), [ prefix_expr ]), m0) =
+    let
+        val (v, m1) = E(prefix_expr, m0);
+    in
+        (v, m1)
+    end
+   | E ( itree(inode("PRIMARY",_), [ postfix_expr ]), m0) =
+    let
+        val (v, m1) = E(postfix_expr, m0);
+    in
+        (v, m1)
+    end
 
-<UNARY>                 ::= "-" <PRIMARY>
-                          | "not" <PRIMARY>
-                          | <PRIMARY>.
-
-<PRIMARY>               ::= identifier
-                          | integer
-                          | "(" <EXPRESSION> ")"
-                          | "|" <EXPRESSION> "|"
-                          | <PREFIX_EXPRESSION>
-                          | <POSTFIX_EXPRESSION>.  *)
                           
   | E ( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
